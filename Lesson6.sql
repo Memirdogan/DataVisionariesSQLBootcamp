@@ -1,63 +1,84 @@
---------------------------------- --minimum üç ilişkili tablo olucak
-------------TRIGGERS------------- --mantıklı bir tane güzel bir sorgu yazmalıyız
---------------------------------- --pdf dosyası ve raporlama ve sunumda kodlar hazır olucak kodları yapıştırıp anlatçaz 7 dakika 3 tablo veritabanı değil
---trigger tetikleyicidir          --ben bunu bunu yaptım şunu yazıyorum bu kodun mantığı bu bu şekilde tetikleniyor 
-insert into Students(name,email)   --veritabanındaki tabloları düzgün ayırmak rastgele veriler ct veya haftaya salı
-values('mahmut','musimusi') --@ işareti olmadığı için hata verdi alttaki kod
+--------------------------------- 
+------------TRIGGERS------------- 
+--------------------------------- 
+--trigger tetikleyicidir          
+insert into Students(name,email)   
+values('mahmut','musimusi') --@ iÃ¾areti olmadÃ½Ã°Ã½ iÃ§in hata verdi alttaki kod
 ---
-CREATE TRIGGER trg_ValidateEmail --yeni kullanıcı kaydında eğer ki içerisinde @ işareti olmayan mail girilirse hata ver ve rollback çalıştır
-on Students --trigger stydent tablosunda oluşsun students tablosu tetikleyici olsun
-after insert --yeni kayıt ekleme işleminden sonra çalıştır
+CREATE TRIGGER trg_ValidateEmail --yeni kullanÃ½cÃ½ kaydÃ½nda eÃ°er ki iÃ§erisinde @ iÃ¾areti olmayan mail girilirse hata ver ve rollback Ã§alÃ½Ã¾tÃ½r
+on Students --trigger stydent tablosunda oluÃ¾sun students tablosu tetikleyici olsun
+after insert --yeni kayÃ½t ekleme iÃ¾leminden sonra Ã§alÃ½Ã¾tÃ½r
 as
 begin 
 	declare @StudentID int, @Email nvarchar(100)
-	select @StudentID = StudentID, @Email = Email from inserted--İNSERTED?? hangi işlemi neden yapıyosun --VALİDASYON NE?
-	IF (@Email NOT LIKE '%@%') --trigger mailin içinde @ işareti yoksa çalışıcak
+	select @StudentID = StudentID, @Email = Email from inserted--ÃNSERTED?? hangi iÃ¾lemi neden yapÃ½yosun --VALÃDASYON NE?
+	IF (@Email NOT LIKE '%@%') --trigger mailin iÃ§inde @ iÃ¾areti yoksa Ã§alÃ½Ã¾Ã½cak
 	begin	
-		raiserror('Geçersiz E-Posta adresi',16,1)
-		rollback transaction --kaydı iptal edicek gerçekleştirmiycek
+		raiserror('GeÃ§ersiz E-Posta adresi',16,1)
+		rollback transaction --kaydÃ½ iptal edicek gerÃ§ekleÃ¾tirmiycek
 	end
 end
 ---------------------------------
 ------------FONKSION-------------
 ---------------------------------
-CREATE FUNCTION GetAverageEnrollmentDateForCourse(    @courseID int)RETURNS dateASBEGIN    DECLARE @averageDate date    DECLARE @totalDays int        SELECT @totalDays = SUM(DATEDIFF(day, '19000101', EnrollmentDate))    FROM Enrollments    WHERE CourseID = @courseID           SELECT @averageDate = DATEADD(day, @totalDays / NULLIF(COUNT(*), 0), '19000101')    FROM Enrollments    WHERE CourseID = @courseID    RETURN @averageDateEND --kurs kayıt olma tarihi ortalaması
+CREATE FUNCTION GetAverageEnrollmentDateForCourse(
+    @courseID int
+)
+RETURNS date
+AS
+BEGIN
+    DECLARE @averageDate date
+    DECLARE @totalDays int
+
+    
+    SELECT @totalDays = SUM(DATEDIFF(day, '19000101', EnrollmentDate))
+    FROM Enrollments
+    WHERE CourseID = @courseID
+    
+   
+    SELECT @averageDate = DATEADD(day, @totalDays / NULLIF(COUNT(*), 0), '19000101')
+    FROM Enrollments
+    WHERE CourseID = @courseID
+
+    RETURN @averageDate
+END --kurs kayÃ½t olma tarihi ortalamasÃ½
 -------------------------------
 declare @count int
 set @count = dbo.Setcoursecount(1)
-print 'bu öğrenci şu kadar kursa katılmış: ' + cast(@count as nvarchar(10))
--- atama yaparak fonksiyonu kullanma algoritması
+print 'bu Ã¶Ã°renci Ã¾u kadar kursa katÃ½lmÃ½Ã¾: ' + cast(@count as nvarchar(10))
+-- atama yaparak fonksiyonu kullanma algoritmasÃ½
 -------------------------------------
 create function Ogrencilistesi()
-returns table -- önemli kısım bu table fonksiyon table döndürür
+returns table -- Ã¶nemli kÃ½sÃ½m bu table fonksiyon table dÃ¶ndÃ¼rÃ¼r
 ...
 ..
 .
 ------------------------------------
---databaseowner açılımı DBO
---fonksiyonlarda dönüş değeri bekleriz ama prosedürlerde dönüş değeri olmasa da olur
---basit işlemlerde fonksiyon daha kapsamlı kapsamlı işlemlerde prosedür kullanılır
---çağırma yöntemleri farklıdır biri select diğeri exec
---işleme yetkisi veri manipilasyonu ve işlem yapma yetkileri prosedürlerde kullanılır
+--databaseowner aÃ§Ã½lÃ½mÃ½ DBO
+--fonksiyonlarda dÃ¶nÃ¼Ã¾ deÃ°eri bekleriz ama prosedÃ¼rlerde dÃ¶nÃ¼Ã¾ deÃ°eri olmasa da olur
+--basit iÃ¾lemlerde fonksiyon daha kapsamlÃ½ kapsamlÃ½ iÃ¾lemlerde prosedÃ¼r kullanÃ½lÃ½r
+--Ã§aÃ°Ã½rma yÃ¶ntemleri farklÃ½dÃ½r biri select diÃ°eri exec
+--iÃ¾leme yetkisi veri manipilasyonu ve iÃ¾lem yapma yetkileri prosedÃ¼rlerde kullanÃ½lÃ½r
 ------------------------------------
 select dbo.Toplama(15,5) as Sonuc
 
-CREATE FUNCTION Toplama( --Toplama fonksiyonu oluşturuyoruz 
-	@sayı1 int, --fonksiyonda çağırdığımızda neler göndericez parametre olarak onu tanıtıyoruz
-	@sayı2 int
+CREATE FUNCTION Toplama( --Toplama fonksiyonu oluÃ¾turuyoruz 
+	@sayÃ½1 int, --fonksiyonda Ã§aÃ°Ã½rdÃ½Ã°Ã½mÃ½zda neler gÃ¶ndericez parametre olarak onu tanÃ½tÃ½yoruz
+	@sayÃ½2 int
 )
-RETURNS INT --bu fonksiyon bize return vermesi istiyoruz bu yüzden
+RETURNS INT --bu fonksiyon bize return vermesi istiyoruz bu yÃ¼zden
 BEGIN
 	DECLARE @SONUC INT
-	SET @SONUC = @sayı1 + @sayı2
+	SET @SONUC = @sayÃ½1 + @sayÃ½2
 	return @SONUC
 END
 --------------------------------------
-------------PROSEDÜRLER---------------
---foreıgn keylerde delete conflicte sebep olur hata alırız 
---prosedür kullanımı
+------------PROSEDÃœRLER---------------
+--------------------------------------
+--foreÃ½gn keylerde delete conflicte sebep olur hata alÃ½rÃ½z 
+--prosedÃ¼r kullanÃ½mÃ½
 exec AddCourse @Name = 'Ahmet', @Email = 'ahmetkaya@gmail.com' 
-exec prosedüradı --prosedürü çağüırma
+exec prosedÃ¼radÃ½ --prosedÃ¼rÃ¼ Ã§aÃ°Ã¼Ã½rma
 --------------------------------------
 create procedure UpdateCourseInfo
 	@CourseID int,
@@ -101,14 +122,14 @@ begin
 	values (@Name,@Email)
 end
 --------------------------------------
-create procedure InsertedEnrollment --prosedür oluşturma ve adını koyma
+create procedure InsertedEnrollment --prosedÃ¼r oluÃ¾turma ve adÃ½nÃ½ koyma
 	@StudentID int,
 	@CourseID int,
 	@EnrollmentDate date
 as
-begin --içine girdik
+begin --iÃ§ine girdik
 	insert into Enrollments(StudentID,CourseID,EnrollmentDate)
-	values (@StudentID,@CourseID,@EnrollmentDate)--girilen insert değerlerinin oluşturduğumuz prosedürde nelere denk geliyo onları girdik
+	values (@StudentID,@CourseID,@EnrollmentDate)--girilen insert deÃ°erlerinin oluÃ¾turduÃ°umuz prosedÃ¼rde nelere denk geliyo onlarÃ½ girdik
 end
 --------------------------------------
 create table Students(
