@@ -1,5 +1,4 @@
-/*
---11.01.2024 TEKRAR ›ZLENCEK--
+--11.01.2024 TEKRAR √ùZLENCEK--
 ------------------------------
 -------------HASH-------------
 ------------------------------
@@ -26,13 +25,13 @@ set @counter = 0
 while @counter < 10000
 begin
  declare @kullaniciID int
- set @kullaniciID = FLOOR(RAND()*10000) + 1 --1 ›LE 10K ARASINDA DEGER ALIYO
+ set @kullaniciID = FLOOR(RAND()*10000) + 1 --1 √ùLE 10K ARASINDA DEGER ALIYO
 
  insert into Siparisler(SiparisID,KullaniciID,UrunAdi,Miktar,Tarih)
  values
  (NEWID(),@kullaniciID,'Urun' + CAST(@counter + 1 as varchar(100)),FLOOR(RAND()*10)*1,DATEADD(DAY,FLOOR(rand()*365),'2023-01-01'))
  set @counter = @counter + 1
-end --KULLANICIYA YAPTI–IMIZ ﬁEY› S›PAR›ﬁLERE TYAPTIK 
+end --KULLANICIYA YAPTI√êIMIZ √ûEY√ù S√ùPAR√ù√ûLERE TYAPTIK 
 
 declare @counter int
 set @counter = 0
@@ -45,7 +44,7 @@ begin
 END 
 
 create table Siparisler111(
-	SiparisID Uniqueidentifier primary key, --Uniqueidentifier bensersiz tan˝mlay˝c˝ olarak geÁer 16 karakter al˝r hash rastgele olu˛turulan benzersiz deerler
+	SiparisID Uniqueidentifier primary key, --Uniqueidentifier bensersiz tan√Ωmlay√Ωc√Ω olarak ge√ßer 16 karakter al√Ωr hash rastgele olu√æturulan benzersiz de√∞erler
 	KullaniciID int,
 	UrunAdi varchar(100),
 	Miktar int,
@@ -58,7 +57,7 @@ create table Siparisler111(
 
 SELECT * FROM vw_KullaniciAdresSemt
 
-CREATE VIEW vw_KullaniciAdresSemt as --view olu˛turma
+CREATE VIEW vw_KullaniciAdresSemt as --view olu√æturma
 select
 K.ID as KullaniciID,
 K.KULLANICI_ADI,
@@ -73,7 +72,7 @@ JOIN SEMTLER S ON S.ID = A.SEMT_ID;
 ------------
 SELECT * FROM VW_KullaniciAdres
 
-CREATE VIEW VW_KullaniciAdres as --view olu˛turma
+CREATE VIEW VW_KullaniciAdres as --view olu√æturma
 select
 K.ID as KullaniciID,
 K.KULLANICI_ADI,
@@ -88,4 +87,3 @@ FROM KULLANICILAR K
 INNER JOIN ADRES A ON K.ID = A.KULLANICI_ID;
 --------------------------------
 --ders 7 trigger orneklerini tekrar izle dk 42 falan
-*/
